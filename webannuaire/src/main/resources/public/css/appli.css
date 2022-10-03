@@ -1,0 +1,30 @@
+body * {
+    margin-left: 1em;
+}
+#idForm {
+    color: dodgerblue;
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 1em 1em;
+    grid-auto-rows: 2.2em;
+    grid-auto-columns: max-content;
+    margin: 2em;
+    max-width: 60em;
+}
+#idForm>*:nth-child(odd) {
+    place-self: end end;
+}
+#idForm>*:nth-child(even) {
+    place-self: end start;
+}
+input {
+    border: 1px solid dodgerblue;
+    line-height: 2em;
+}
+button {
+    background-color: #fff;
+    border: 1px solid dodgerblue;
+    border-radius: 3px;
+    line-height: 2em;
+    min-width: 5rem;
+}
