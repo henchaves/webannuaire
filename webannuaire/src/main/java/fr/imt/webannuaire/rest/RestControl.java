@@ -28,12 +28,12 @@ public class RestControl {
     }
 
     @PostMapping("/person")
-    public ResponseEntity<String> add(@RequestBody Person newPerson) {
+    public ResponseEntity<?> add(@RequestBody Person newPerson) {
         if (di.getFromId(newPerson.getId()) != null){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Personne deja existante");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("{err: Personne deja existante}");
         }
         di.addPerson(newPerson);
-        return ResponseEntity.status(HttpStatus.CREATED).body("http://localhost:8080/person/"+newPerson.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(di.getFromId(newPerson.getId()));
     }
 
     @GetMapping("/person/{id}")

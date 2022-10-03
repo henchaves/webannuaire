@@ -40,6 +40,12 @@ public class DictionnaryService implements DictionnaryItf {
 
     @Override
     public void addPerson(Person p) {
+        int personId =  p.getId();
+        if (personId == 0) {
+            personId = hm.size() + 1;
+            p.setId(personId);
+        }
+
         hm.put(p.getId(), p);
     }
 

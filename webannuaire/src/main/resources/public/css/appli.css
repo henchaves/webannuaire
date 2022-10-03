@@ -1,7 +1,7 @@
 body * {
     margin-left: 1em;
 }
-#idForm {
+#contactsForm {
     color: dodgerblue;
     display: grid;
     grid-template-columns: auto auto;
@@ -11,10 +11,10 @@ body * {
     margin: 2em;
     max-width: 60em;
 }
-#idForm>*:nth-child(odd) {
+#contactsForm>*:nth-child(odd) {
     place-self: end end;
 }
-#idForm>*:nth-child(even) {
+#contactsForm>*:nth-child(even) {
     place-self: end start;
 }
 input {
