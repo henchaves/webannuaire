@@ -60,7 +60,7 @@ public class RestControl {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Pas de personne a mettre a jour avec cet ID");
         }
         di.addPerson(updatedPerson);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.status(HttpStatus.OK).body(di.getFromId(updatedPerson.getId()));
     }
 
 

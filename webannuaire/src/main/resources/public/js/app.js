@@ -15,6 +15,7 @@ class ContactsTable {
         this.deleteButton = document.createElement("button");
         this.deleteButton.id = "deleteButton";
         this.deleteButton.textContent = "Supprimer";
+        this.deleteButton.disabled = true;
         this.deleteButton.addEventListener("click", this.deleteButtonHandler.bind(this));
         thButton.appendChild(this.deleteButton);
         tr.appendChild(thButton);
@@ -33,11 +34,11 @@ class ContactsTable {
 
     clear() {
         while (this.table.rows.length > 1) {
-            this.table.deleteRow(1);
+            this.table.remove(1);
         }
     }
 
-    insert(person) {
+    upinsert(person, isNew=true) {
         const tr = document.createElement('tr');
         tr.dataset.personid = person.id;
 
@@ -56,18 +57,26 @@ class ContactsTable {
             tr.appendChild(tdElement);
         });
 
-        this.table.appendChild(tr);
+        if (isNew) {
+            this.table.appendChild(tr);
+        } else {
+            this.table.replaceChild(tr, document.querySelector(`tr[data-personid="${person.id}"]`));
+        }
+    }
+
+    remove(personId) {
+        this.table.removeChild(document.querySelector(`tr[data-personid="${personId}"]`));
     }
 
     changeForm(event) {
         const tr = event.target.parentElement.parentElement;
 
         getPerson(tr.dataset.personid, getPersonCallback);
+        this.deleteButton.disabled = false;
     }
 
     deleteButtonHandler(event) {
         event.preventDefault();
-        console.log("deleteButtonHandler");
         const tr = document.querySelector('#contactsTable input[type="radio"]:checked').parentElement.parentElement;
 
         deletePerson(tr.dataset.personid, deletePersonCallback);
@@ -178,7 +187,7 @@ const HTTP_NO_CONTENT = 204;
 
 function getAllPersonsCallback(persons) {
     contactsTable.clear();
-    persons.forEach((person) => contactsTable.insert(person));
+    persons.forEach((person) => contactsTable.upinsert(person));
 }
 
 function getAllPersons(callback) {
@@ -203,7 +212,7 @@ function getAllPersons(callback) {
 }
 
 function createPersonCallback(person) {
-    contactsTable.insert(person);
+    contactsTable.upinsert(person);
     contactsForm.clearForm();
 }
 
@@ -254,10 +263,11 @@ function getPerson(id, callback) {
     }
 }
 
-function updatePersonCallback() {
+function updatePersonCallback(person) {
+    contactsTable.upinsert(person, false);
+    contactsTable.deleteButton.disabled = true;
     contactsForm.clearForm();
     contactsForm.changeActionButtonState("add");
-    getAllPersons(getAllPersonsCallback);
 }
 
 function updatePerson(person, callback) {
@@ -265,8 +275,9 @@ function updatePerson(person, callback) {
     xhr.onreadystatechange = function() {
         if (xhr.readyState == REPLIED) {
             switch (xhr.status) {
-                case HTTP_NO_CONTENT:
-                    callback();
+                case HTTP_OK:
+                    const person = JSON.parse(xhr.responseText);
+                    callback(person);
                     break;
             }
         }
@@ -281,10 +292,11 @@ function updatePerson(person, callback) {
     }
 }
 
-function deletePersonCallback() {
+function deletePersonCallback(personId) {
+    contactsTable.remove(personId);
+    contactsTable.deleteButton.disabled = true;
     contactsForm.clearForm();
     contactsForm.changeActionButtonState("add");
-    getAllPersons(getAllPersonsCallback);
 }
 
 function deletePerson(id, callback) {
@@ -293,7 +305,7 @@ function deletePerson(id, callback) {
         if (xhr.readyState == REPLIED) {
             switch (xhr.status) {
                 case HTTP_NO_CONTENT:
-                    callback();
+                    callback(id);
                     break;
             }
         }
