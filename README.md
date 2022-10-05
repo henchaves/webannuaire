@@ -1,2 +1,3 @@
 # Webannuaire
-- API: Java (SpringBoot)
+- Backend: REST API using SpringBoot (Java)
+- Frontend: VanillaJS + AJAX
